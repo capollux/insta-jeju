@@ -1,4 +1,4 @@
-<a href="/posts/<%= @post.id %>/edit">Edit</a>
+<%= link_to( "Edit", edit_post_path(@post) ) %>
 
 <div>
   <img src="<%= @post.image.url %>">
@@ -6,3 +6,4 @@
 </div>
 
 <a href="/posts/<%= @post.id %>" data-method="delete">Delete</a>
+<%= link_to( "Delete", @post, method: :delete ) %>

@@ -2,15 +2,15 @@
   
   <h1>Posts Index</h1>
 
-  <a href="/posts/new">New</a>
+  <%= link_to("New", new_post_path) %>
   
   <div class="row">
     <% @posts.each do |post| %>
   
       <div class="col-4">
-        <a href="/posts/<%= post.id %>">
+        <%= link_to(post) do %>
           <img src="<%= post.image.url %>" class="img-fluid">
-        </a>
+        <% end %>
       </div>
     
     <% end %>
