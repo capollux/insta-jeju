@@ -9,7 +9,7 @@
   
       <div class="col-4">
         <%= link_to(post) do %>
-          <img src="<%= post.image.url %>" class="img-fluid">
+          <%= image_tag(post.image.url, class:"img-fluid") %>
         <% end %>
       </div>
     
