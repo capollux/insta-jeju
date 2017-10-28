@@ -141,3 +141,171 @@ include CarrierWave::MiniMagick
 
 
 ## 171027
+
+### routes.rb
+
+1. `routes.rb`에 RESTful하게 생성한 URL들을 resources를 사용해서 아래와 같이 한줄 코드로 작성한다.
+2. 첫 화면을 게시글들의 리스트가 있는 페이지로 지정하기 위하여 아래와 같이 코드를 추가한다. 
+
+```ruby
+root 'posts#index'
+resources :posts
+```
+
+### URL Helper
+
+`index.html.erb`, `show.html.erb` 파일에 작성되어있는 **a tag**를 **link_to** helper로 바꾸어 작성한다.
+
+1. `index.html.erb`
+
+```erb
+<a href="/posts/new">New</a>
+
+...
+
+<a href="/posts/<%= post.id %>">
+  ...
+</a>
+```
+위 코드를 아래 코드로
+
+```erb
+<%= link_to("New", new_post_path) %>
+
+...
+
+<%= link_to(post) do %>
+  ...
+<% end %>
+```
+
+2. `show.html.erb`
+
+```erb
+<a href="/posts/<%= @post.id %>/edit">Edit</a>
+
+...
+
+<a href="/posts/<%= @post.id %>" data-method="delete">Delete</a>
+```
+
+위 코드를 아래 코드로
+
+```erb
+<%= link_to( "Edit", edit_post_path(@post) ) %>
+
+...
+
+<%= link_to( "Delete", @post, method: :delete ) %>
+```
+
+
+### Form Helper
+
+`new.html.erb`, `edit.html.erb` 파일에 작성되어있는 **form tag**를 **form_for** helper로 바꾸어 작성한다.
+
+
+1. `new.html.erb`
+
+```erb
+<form action="/posts/<%= @post.id %>" method="post">
+  Image: <input type="file" name="image"><br>
+  Content: <input type="text" name="content" value="<%= @post.content %>"><br>
+  <input type="submit" value="Save">
+</form>
+```
+
+위 코드를 아래 코드로
+
+```erb
+<%= form_for(@post) do |f| %>
+  Image: <%= f.file_field :image %>
+  Content: <%= f.text_field :content %>
+  <%= f.submit "Save" %>
+<% end %>
+```
+
+
+2. `edit.html.erb`
+
+```erb
+<form action="/posts/<%= @post.id %>" method="post">
+  <input type="hidden" name="_method" value="put">
+  Image: <input type="file" name="image"><br>
+  Content: <input type="text" name="content" value="<%= @post.content %>"><br>
+  <input type="submit" value="Save">
+</form>
+```
+
+위 코드를 아래 코드로
+
+```erb
+<%= form_for(@post) do |f| %>
+  Image: <%= f.file_field :image %>
+  Content: <%= f.text_field :content %>
+  <%= f.submit "Save" %>
+<% end %>
+```
+
+3. `posts_controller.rb` 의 **new** 부분에 다음과 같은 코드를 추가한다.
+
+```ruby
+def new
+  @post = Post.new
+end
+```
+
+
+4. `posts_controller.rb` 의 **create**와 **update** 부분의 코드를 다음과 같이 수정한다.
+
+```ruby
+post.image = params[:image]
+post.content = params[:content]
+post.save
+
+redirect_to "/posts/#{post.id}"
+```
+
+위 코드를 아래 코드로
+
+```ruby
+post.image = params[:post][:image]
+post.content = params[:post][:content]
+post.save
+
+redirect_to post
+```
+
+5. `app/controllers/application_controller.rb`
+
+주석처리 되어 있는 `protect_from_forgery with: :exception` 코드 부분을 주석 해제한다. ('#' 삭제)
+
+
+### Asset Tag Helper
+
+`index.html.erb`, `show.html.erb` 파일에 작성되어있는 **img tag**를 **image_tag** helper로 바꾸어 작성한다.
+
+1. `index.html.erb`
+
+```erb
+<img src="<%= post.image.url %>" class="img-fluid">
+```
+
+위 코드를 아래 코드로
+
+```erb
+<%= image_tag(post.image.url, class:"img-fluid") %>
+```
+
+
+2. `show.html.erb`
+
+```erb
+<img src="<%= @post.image.url %>">
+```
+
+위 코드를 아래 코드로
+
+```erb
+<%= image_tag(@post.image.url, class:"img-fluid") %>
+```
