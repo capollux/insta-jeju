@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  devise_for :users
   # RESTful
   # get 'posts' => 'posts#index'
   # get 'posts/new' => 'posts#new'
@@ -8,6 +9,7 @@ Rails.application.routes.draw do
   # put 'posts/:id' => 'posts#update'
   # delete 'posts/:id' => 'posts#destroy'
   root 'posts#index'
+  get 'mypage' => 'posts#mypage', as: :mypage #=> mypage_path
   resources :posts
   
   
