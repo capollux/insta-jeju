@@ -5,7 +5,7 @@
 
 ### C9 프로젝트 생성
 1. **'Create a new workspace'** 버튼 클릭
-2. **'Workspace Name'**을 입력하고, **'Choose a template'**에서 **Ruby**를 선택
+2. **Workspace Name**을 입력하고, **Choose a template**에서 **Ruby**를 선택
 3. **'Create workspace'** 클릭
 4. 생성이 완료되어 로딩이 끝나고 IDE가 보이면, 아래쪽의 terminal에 `bundle`을 입력하여 필요한 라이브러리(gem)들을 설치한다.
 5. 설치가 완료되면 위쪽의 **'Run Project'** 버튼을 클릭하여 서버를 실행한다.
@@ -163,7 +163,7 @@ class PostsController < ApplicationController
 </form> 
 ```
 
-5. 서버가 실행 중이라면 한번 **'Stop'**을 해준 후에, **'Run Project'**로 서버를 재시작 하고, 실행 중이 아니라면 바로 **'Run Project'**로 서버를 실행하여 위에서 작성한 코드들이 정상적으로 동작하는지 확인한다.
+5. 서버가 실행 중이라면 **'Stop'** 버튼으로 정지한 후에, **'Run Project'** 버튼으로 서버를 재시작 하고, 실행 중이 아니라면 바로 **'Run Project'** 버튼으로 서버를 실행하여 위에서 작성한 코드들이 정상적으로 동작하는지 확인한다.
 
 
 ## 171025
@@ -181,7 +181,7 @@ class PostsController < ApplicationController
 6. 'Group name'을 입력, 'Search' 칸에서 **S3**를 검색하여 나오는 결과중 **AmazonS3FullAccess**를 체크하고 **'Create group'** 클릭
 7. 생성된 Group을 체크하고 **'Next'** 클릭
 8. **'Create User'** 클릭
-9. **'Download .csv'**를 클릭하여 ID와 KEY를 저장하거나 **'Secret access key'** 아래쪽의 'show'를 클릭하여 ID와 KEY를 확인. 여기서 확인할 수 있는 KEY는 이 페이지를 벗어나면 다시 확인이 불가능하므로 꼭 Download를 하거나 다른 곳에 복사해두어야 한다. 또한 타인에게 알려지면 안되는 중요한 정보이므로 인터넷 상에 업로드하는 일이 없도록 하여야한다.
+9. **'Download .csv'** 버튼을 클릭하여 ID와 KEY를 저장하거나 **'Secret access key'** 아래쪽의 'show'를 클릭하여 ID와 KEY를 확인. 여기서 확인할 수 있는 KEY는 이 페이지를 벗어나면 다시 확인이 불가능하므로 꼭 Download를 하거나 다른 곳에 복사해두어야 한다. 또한 타인에게 알려지면 안되는 중요한 정보이므로 인터넷 상에 업로드하는 일이 없도록 하여야한다.
 
 ### S3 Bucket 만들기
 1. 좌측 상단 'Services' > 'Storage' > 'S3' 클릭
@@ -241,7 +241,7 @@ end
 ### figaro
 
 1. 아래쪽의 termial에서 `bundle exec figaro install` 명령어로 `config/application.yml` 파일을 만들어준다.
-2. 앞서 생성했던 IAM Key를 `application.yml` 파일에 **(ID)**와 **(KEY)**에 맞추어 작성해준다. 괄호는 함께 입력하지 않는다.
+2. 앞서 생성했던 IAM Key를 `application.yml` 파일에 **(ID)** 와 **(KEY)** 에 맞추어 작성해준다. 괄호는 함께 입력하지 않는다.
 
 ```yaml
   AWS_ACCESS_KEY_ID: (ID)
