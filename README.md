@@ -3,6 +3,169 @@
 ## 171023
 
 
+### C9 프로젝트 생성
+1. **'Create a new workspace'** 버튼 클릭
+2. **'Workspace Name'**을 입력하고, **'Choose a template'**에서 **Ruby**를 선택
+3. **'Create workspace'** 클릭
+4. 생성이 완료되어 로딩이 끝나고 IDE가 보이면, 아래쪽의 terminal에 `bundle`을 입력하여 필요한 라이브러리(gem)들을 설치한다.
+5. 설치가 완료되면 위쪽의 **'Run Project'** 버튼을 클릭하여 서버를 실행한다.
+6. 실행 후, 보이는 URL로 접속을 하여 Rails 기본 페이지가 뜨는 지 확인한다.
+
+
+### Gemfile
+1. **Gemfile**을 열어, 2번째 줄과 3번째 줄 사이에 `gem 'rails_db'`를 추가한다.
+2. 아래쪽 terminal에서 `bundle`을 입력한다.
+
+
+### Posts Model 생성
+1. 아래 쪽의 termimal에서 `rails g model post`를 입력한다.
+2. db/migrate 폴더 안에 새로 생긴 **create_posts.rb** 파일을 열어, 아래와 같이 작성한다.
+
+```ruby
+class CreatePosts < ActiveRecord::Migration
+  def change
+    create_table :posts do |t|
+
+      t.text :content
+      t.text :image
+
+      t.timestamps null: false
+    end
+  end
+end
+```
+
+3. 작성 완료 후, 아래쪽의 terminal에서 `rake db:migrate`를 입력한다.
+
+
+### routes.rb 작성
+1. **config/routes.rb** 파일을 열어 1번째 줄 바로 아래에 다음과 같이 작성한다.
+
+```ruby
+get 'posts' => 'posts#index'
+get 'posts/new' => 'posts#new'
+get 'posts/:id' => 'posts#show'
+post 'posts' => 'posts#create'
+get 'posts/:id/edit' => 'posts#edit'
+put 'posts/:id' => 'posts#update'
+delete 'posts/:id' => 'posts#destroy'
+```
+
+
+### Posts Controller 생성 및 작성
+1. 아래 쪽의 termimal에서 `rails g controller posts`를 입력한다.
+2. 생성된 **app/controllers/posts_controller.rb** 파일을 열어 다음과 같이 작성한다.
+
+```ruby
+class PostsController < ApplicationController
+    
+  def index
+    @posts = Post.all
+  end
+  
+  def new
+    
+  end
+  
+  def create
+    @post = Post.new
+    @post.content = params[:content]
+    @post.save
+    
+    redirect_to "/posts/#{@post.id}"
+  end
+  
+  def show
+    @post = Post.find(params[:id])
+  end
+  
+  def edit
+    @post = Post.find(params[:id])
+  end
+  
+  def update
+    @post = Post.find(params[:id])
+    @post.content = params[:content]
+    @post.save
+    
+    redirect_to "/posts/#{@post.id}"
+  end
+  
+  def destroy
+    @post = Post.find(params[:id])
+    @post.destroy
+                
+    redirect_to "/posts"
+  end
+    
+ end
+```
+ 
+3. **app/controllers/application_controller.rb** 파일을 열어, `protect_from_forgery with: :exception` 코드 부분을 주석 처리한다. (코드 맨 앞에 '#' 추가)
+
+
+### Posts View 생성 및 작성
+
+**app/views/posts** 폴더 안에 `index.html.erb`, `new.html.erb`, `show.html.erb`, `edit.html.erb` 총 4개의 파일을 만들고 다음과 같이 코드를 작성한다.
+
+1. `index.html.erb`
+
+```erb
+<h1>Posts Index</h1>
+
+<a href="/posts/new">New</a>
+
+<div>
+  <% @posts.each do |post| %>
+
+    <div>
+      <a href="/posts/<%= post.id %>">
+        <%= post.content %>
+      </a>
+    </div>
+  
+  <% end %>
+</div>
+```
+
+2. `new.html.erb`
+
+```erb
+<h1>New Post</h1>
+
+<form action="/posts" method="post">
+  Content: <input type="text" name="content"><br>
+  <input type="submit" value="Save">
+</form>
+```
+
+3. `show.html.erb`
+
+```erb
+<a href="/posts/<%= @post.id %>/edit">Edit</a>
+
+<div>
+  <%= @post.content %>
+</div>
+<a href="/posts/<%= @post.id %>" data-method="delete">Delete</a>
+```
+
+
+4. `edit.html.erb`
+
+```erb
+<h1>Edit Post</h1>
+
+<form action="/posts/<%= @post.id %>" method="post">
+  <input type="hidden" name="_method" value="put">
+  Content: <input type="text" name="content" value="<%= @post.content %>"><br>
+  <input type="submit" value="Save">
+</form> 
+```
+
+5. 서버가 실행 중이라면 한번 **'Stop'**을 해준 후에, **'Run Project'**로 서버를 재시작 하고, 실행 중이 아니라면 바로 **'Run Project'**로 서버를 실행하여 위에서 작성한 코드들이 정상적으로 동작하는지 확인한다.
+
+
 ## 171025
 
 ### AWS 계정 만들기
