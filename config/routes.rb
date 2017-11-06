@@ -10,7 +10,9 @@ Rails.application.routes.draw do
   # delete 'posts/:id' => 'posts#destroy'
   root 'posts#index'
   get 'mypage' => 'posts#mypage', as: :mypage #=> mypage_path
-  resources :posts
+  resources :posts do
+    resources :comments, only:[:create, :destroy]
+  end
   
   
   # The priority is based upon order of creation: first created -> highest priority.

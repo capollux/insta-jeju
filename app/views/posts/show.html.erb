@@ -1,12 +1,38 @@
-<% if current_user == @post.user %>
-  <%= link_to( "Edit", edit_post_path(@post) ) %> | 
-  <%= link_to( "Delete", @post, method: :delete ) %>
-<% end %>
 
-<div>
-  <%= image_tag(@post.image.url, class:"img-fluid") %>
-  <p>
-    <%= @post.user.email %><br>
-    <%= @post.content %>  
-  </p>
+<div class="container">
+  <% if current_user == @post.user %>
+    <%= link_to( "Edit", edit_post_path(@post) ) %> | 
+    <%= link_to( "Delete", @post, method: :delete ) %>
+  <% end %>
+  
+  <div>
+    <%= image_tag(@post.image.url, class:"img-fluid") %>
+    <p>
+      <%= @post.user.email %><br>
+      <%= @post.content %>  
+    </p>
+  </div>
+  
+  <ul>
+    <% @post.comments.each do |comment| %>
+    <li>
+      <b><%= comment.user.email %></b> : <%= comment.content %>
+      <% if current_user == comment.user %>
+      - <%= link_to "Delete", [@post, comment], method: :delete %> 
+      <% end %>
+    </li>
+    <% end %>
+  </ul>
+  
+  <% if user_signed_in? %>
+  <div>
+    <%= form_for([@post, @comment]) do |f| %>
+      Comment
+        <div class="form-group">
+         <%= f.text_field :content, class:"form-control" %>
+        </div>
+      <%= f.submit "Save" %>
+    <% end %>
+  </div>
+  <% end %>
 </div>
