@@ -472,3 +472,201 @@ redirect_to post
 ```erb
 <%= image_tag(@post.image.url, class:"img-fluid") %>
 ```
+
+## 171108
+
+### 1. Install ruby using rbenv
+
+#### 1.1. Install rbenv
+
+Install some dependencies for Ruby.
+
+```console
+$ sudo apt update
+$ sudo apt-get install git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev python-software-properties libffi-dev nodejs
+```
+
+Install rbenv and ruby-build plugins.
+
+```console
+$ cd
+$ git clone https://github.com/rbenv/rbenv.git ~/.rbenv
+$ echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
+$ echo 'eval "$(rbenv init -)"' >> ~/.bashrc
+$ exec $SHELL
+
+$ git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
+$ echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.bashrc
+$ exec $SHELL
+```
+
+### 1.2. Install ruby & bundler gem
+
+Install ruby.
+
+```console
+$ rbenv install -v [RUBY VERSION] # ex) rbenv install -v 2.3.3
+$ rbenv global [RUBY VERSION]
+$ ruby -v # Check Ruby version
+```
+
+Install bundler gem.
+
+```console
+$ echo "gem: --no-document" > ~/.gemrc
+$ gem install bundler
+```
+
+## 2. Git Clone
+
+### 2.1. Clone your repository
+
+```console
+$ cd
+$ git clone [GITHUB REPOSITORY URL]
+```
+
+### 2.2. Make 'application.yml' using figaro
+
+Add gem to Gemfile:
+
+```ruby
+gem 'figaro'
+```
+
+Install figaro:
+
+```console
+$ bundle && bundle exec figaro install
+```
+
+Generate 'SECRET KEY':
+
+```console
+$ rake secret RAILS_ENV=production
+```
+
+Append the 'SECRET KEY' to 'application.yml'
+
+```yml
+# config/application.yml
+SECRET_KEY_BASE: [SECRET KEY]
+AWS_ACCESS_KEY_ID: [AWS_ACCESS_KEY_ID] 
+AWS_SECRET_ACCESS_KEY: [AWS_SECRET_ACCESS_KEY]
+```
+
+
+## 3. Passenger & nginx
+
+### 3.1. Install passenger & nginx
+
+Install some dependencies.
+
+```console
+$ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 561F9B9CAC40B2F7
+$ sudo apt install -y apt-transport-https ca-certificates
+```
+
+Add Passenger APT repository.
+
+```console
+$ sudo sh -c 'echo deb https://oss-binaries.phusionpassenger.com/apt/passenger xenial main > /etc/apt/sources.list.d/passenger.list'
+$ sudo apt update
+```
+
+Install Passenger & Nginx
+
+```console
+$ sudo apt install -y nginx-extras passenger
+$ sudo service nginx start
+```
+
+### 3.2. Configure passenger
+
+```console
+$ sudo vi /etc/nginx/passenger.conf
+```
+
+Change the passenger_ruby line to point to your ruby executable
+
+```config
+# /etc/nginx/passenger.conf
+passenger_ruby /home/ubuntu/.rbenv/shims/ruby;
+```
+
+### 3.3. Configure nginx
+
+```console
+$ sudo vi /etc/nginx/nginx.conf
+```
+
+Find the following lines, and uncomment them:
+
+```config
+# /etc/nginx/nginx.conf
+##
+# Phusion Passenger
+##
+# Uncomment it if you installed ruby-passenger or ruby-passenger-enterprise
+##
+
+include /etc/nginx/passenger.conf;
+```
+
+And add the nginx host
+
+```console
+$ sudo vi /etc/nginx/sites-enabled/default
+```
+Replace the file's contents with the following
+
+```config
+# /etc/nginx/sites-enabled/default
+server {
+        listen 80;
+        listen [::]:80 ipv6only=on;
+
+        server_name         example.com;
+        passenger_enabled   on;
+        rails_env           production;
+        root                /home/ubuntu/[my_app_name]/public;
+
+        # Add index.php to the list if you are using PHP
+        # index index.html index.htm index.nginx-debian.html;
+
+        ## Comment the following block
+        # location / {
+        #   # First attempt to serve request as file, then
+        #   # as directory, then fall back to displaying a 404.
+        #   try_files $uri $uri/ =404;
+        # }
+
+        # redirect server error pages to the static page /50x.html
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   html;
+        }
+}
+```
+
+Check the nginx configuration file.
+```console
+$ sudo nginx -t
+```
+
+If syntax is ok and test is successful, Restart nginx.
+```console
+$ sudo service nginx restart
+```
+
+Manually touch restart.txt
+
+```console
+$ touch tmp/restart.txt
+```
+
+Manually restart nginx
+
+```console
+$ sudo service nginx restart
+```
