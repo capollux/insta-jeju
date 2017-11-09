@@ -659,14 +659,23 @@ If syntax is ok and test is successful, Restart nginx.
 $ sudo service nginx restart
 ```
 
-Manually touch restart.txt
+
+## 4. Project Setting
+
+### 4.1. DB Migrate
+
+```console
+$ bundle exec rake db:migrate RAILS_ENV=production
+```
+
+### 4.2. Asset Precomplie
+
+```console
+$ bundle exec rake assets:precompile RAILS_ENV=production
+```
+
+### 4.3. Project Refresh
 
 ```console
 $ touch tmp/restart.txt
-```
-
-Manually restart nginx
-
-```console
-$ sudo service nginx restart
 ```
